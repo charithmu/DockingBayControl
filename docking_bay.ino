@@ -28,10 +28,10 @@
 #define BEL 18
 
 //configurations
-#define TRIG_DIST 15
+#define TRIG_DIST 20
 
 //constants
-const String ID = "BAY002S";
+const String ID = "BAY001D";
 
 const String statusTopic = "fleet/dockingBay/" + ID + "/status";
 const String commandTopic = "fleet/dockingBay/" + ID + "/command";
@@ -65,7 +65,7 @@ enum COMMAND
 EspMQTTClient espmqttclient(
     "DroneLab",
     "dronelab",
-    "10.42.0.1", // MQTT Broker server ip
+    "192.168.1.126", // MQTT Broker server ip
     // "DroneLabMQTT",   // Can be omitted if not needed
     // "dronelab", // Can be omitted if not needed
     ID.c_str(), // Client name that uniquely identify your device
@@ -168,7 +168,7 @@ void initESPMqtt()
   espmqttclient.enableDebuggingMessages();                                   // Enable debugging messages sent to serial output
   espmqttclient.enableHTTPWebUpdater();                                      // Enable the web updater. User and password default to values of MQTTUsername and MQTTPassword. These can be overridded with enableHTTPWebUpdater("user", "password").
   espmqttclient.enableOTA();                                                 // Enable OTA (Over The Air) updates. Password defaults to MQTTPassword. Port is the default OTA port. Can be overridden with enableOTA("password", port).
-  espmqttclient.enableLastWillMessage(statusTopic.c_str(), lastMsg.c_str()); // You can activate the retain flag by setting the third parameter to true
+  espmqttclient.enableLastWillMessage(statusTopic.c_str(), lastMsg.c_str(), false); // You can activate the retain flag by setting the third parameter to true
 }
 
 /**
@@ -179,7 +179,7 @@ void onConnectionEstablished()
 {
   Serial.println("WIFI+MQTT READY!!");
   espmqttclient.subscribe(commandTopic, commandCallback);
-  espmqttclient.publish(statusTopic, firstMsg); // You can activate the retain flag by setting the third parameter to true
+  espmqttclient.publish(statusTopic, firstMsg, false); // You can activate the retain flag by setting the third parameter to true
 }
 
 /**
@@ -562,3 +562,27 @@ DockBayState evalCommands(DockBayState currentState)
   cmd = C_NOP; // clear command
   return nextState;
 }
+
+/////////////////
+
+// int averagedValue;
+// int total;
+// int count;
+// int window = 10;
+
+// int averageFilter(int newValue){
+  
+//   if(count < window){
+//     total = total + newValue;
+//     count++;
+//   }else{
+//     averagedValue = total/window;
+//     count = 0;
+//   }
+
+//   return averagedValue;
+// }
+
+// int movingAverageFilter(){
+  
+// }
